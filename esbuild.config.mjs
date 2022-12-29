@@ -15,7 +15,7 @@ esbuild.build({
 	banner: {
 		js: banner,
 	},
-	entryPoints: ['main.ts'],
+	entryPoints: ['canvasReferencePlugin.ts'],
 	bundle: true,
 	external: [
 		'obsidian',
