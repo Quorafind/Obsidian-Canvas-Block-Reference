@@ -1,6 +1,6 @@
 # Obsidian Canvas Block Reference
 
-> This plugin would be dropped if Obsidian Devs support block reference in canvas.
+> This plugin would be deprecated if Obsidian Devs support block reference in canvas.
 > Would support migration when the feature is officially supported by Obsidian.
 
 Use it like what you do in markdown.

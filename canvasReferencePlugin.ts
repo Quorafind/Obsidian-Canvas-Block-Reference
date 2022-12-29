@@ -17,9 +17,7 @@ export default class CanvasReferencePlugin extends Plugin {
 			around(WorkspaceLeaf.prototype, {
 				openFile: (old) =>
 					async function (file: TFile, state?: ViewState) {
-						const result = await old.call(this, file, state);
-
-						console.log(result);
+						await old.call(this, file, state);
 						// Check if file is a canvas file
 						// @ts-ignore
 						if(file.extension === "canvas" && state?.eState?.subpath) {
@@ -67,7 +65,9 @@ export default class CanvasReferencePlugin extends Plugin {
 				async function (context: EditorSuggestContext) {
 					const result = await next.call(this, context);
 
-					if(context.query.lastIndexOf(".canvas") !== -1) {
+					if(this.mode === "file") return result;
+
+					if(context.query.lastIndexOf(".canvas") !== -1 && (this.mode === "block" || this.mode === "heading")) {
 						// Get current canvas path from query string
 						const path = context.query.substring(0, context.query.lastIndexOf(".canvas") + 7);
 
@@ -89,7 +89,10 @@ export default class CanvasReferencePlugin extends Plugin {
 							inputStr = (context.query.replace(cM, " ")).normalize("NFC").split("^")[1];
 						}
 						const query = prepareFuzzySearch(inputStr);
-						const textNodes = nodes.filter((node: any) => (node.text != undefined || node.label !== undefined));
+
+						let textNodes = [];
+						if(this.mode === "heading") textNodes = nodes.filter((node: any) => (node.label !== undefined));
+						else textNodes = nodes.filter((node: any) => (node.text !== undefined));
 
 						textNodes.forEach((node: any)=>{
 							const queryResult = query(node?.text ?? node?.label);
@@ -116,11 +119,7 @@ export default class CanvasReferencePlugin extends Plugin {
 									matches: null,
 									score: queryResult.score,
 								});
-
-
 							}
-
-
 						});
 
 						return suggestions.length > 0? suggestions : result;
