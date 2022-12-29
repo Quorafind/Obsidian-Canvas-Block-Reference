@@ -3,7 +3,7 @@
 	"name": "Canvas Block Reference",
 	"version": "0.0.2",
 	"minAppVersion": "1.1.0",
-	"description": "This is a sample plugin for Obsidian. This plugin demonstrates some of the capabilities of the Obsidian API.",
+	"description": "A plugin for you to block refer card in canvas.",
 	"author": "Boninall",
 	"authorUrl": "https://github.com/Quorafind",
 	"fundingUrl": {
