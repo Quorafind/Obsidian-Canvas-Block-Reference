@@ -1,7 +1,7 @@
 {
 	"id": "canvas-block-reference",
 	"name": "Canvas Block Reference",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"minAppVersion": "1.1.0",
 	"description": "A plugin for you to block refer card in canvas.",
 	"author": "Boninall",
