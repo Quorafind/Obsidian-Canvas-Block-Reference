@@ -37,16 +37,14 @@ export default class CanvasReferencePlugin extends Plugin {
 	}
 
 	patchEditorSuggest() {
-		const getNodesFromCanvas = async (canvasFile: TFile, context: EditorSuggestContext) => {
+		const getNodesFromCanvas = async (canvasFile: TFile) => {
 
 
 			// Convert json string to object
 			const canvasFileContent = await app.vault.cachedRead(canvasFile);
 			const canvasFileData = JSON.parse(canvasFileContent);
 
-			const nodes = canvasFileData.nodes;
-
-			return nodes;
+			return canvasFileData.nodes;
 
 		}
 
@@ -71,12 +69,12 @@ export default class CanvasReferencePlugin extends Plugin {
 						// Get current canvas path from query string
 						const path = context.query.substring(0, context.query.lastIndexOf(".canvas") + 7);
 
-						const canvasFile = app.metadataCache.getFirstLinkpathDest(path, context.file.path);
+						const canvasFile = app.metadataCache.getFirstLinkpathDest(path, context.file ? context.file.path : "");
 
 						if(!canvasFile) return result;
 
 						// Get nodes from canvas file
-						const nodes = await getNodesFromCanvas(canvasFile, context);
+						const nodes = await getNodesFromCanvas(canvasFile);
 
 						if(!nodes) return result;
 						const suggestions: any[] = [];
@@ -90,7 +88,7 @@ export default class CanvasReferencePlugin extends Plugin {
 						}
 						const query = prepareFuzzySearch(inputStr);
 
-						let textNodes = [];
+						let textNodes: any[];
 						if(this.mode === "heading") textNodes = nodes.filter((node: any) => (node.label !== undefined));
 						else textNodes = nodes.filter((node: any) => (node.text !== undefined));
 
