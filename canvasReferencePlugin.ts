@@ -16,8 +16,8 @@ export default class CanvasReferencePlugin extends Plugin {
 
 	registerCommands() {
 		this.addCommand({
-		    id: 'canvas-reference',
-		    name: 'Canvas Reference',
+		    id: 'copy-canvas-card-reference',
+		    name: 'Copy Canvas Card Reference',
 		    checkCallback: (checking: boolean) => {
 		        // Conditions to check
 		        const canvasView = this.app.workspace.getActiveViewOfType(ItemView);
@@ -25,6 +25,7 @@ export default class CanvasReferencePlugin extends Plugin {
 		            // If checking is true, we're simply "checking" if the command can be run.
 		            // If checking is false, then we want to actually perform the operation.
 		            if (!checking) {
+						// @ts-ignore
 		                const canvas = canvasView.canvas;
 
 						// Get the selected node
@@ -33,6 +34,7 @@ export default class CanvasReferencePlugin extends Plugin {
 
 						// Get the first node
 						const node = selection.values().next().value;
+						// @ts-ignore
 						const text = "[[" + canvasView.file?.path + "#^" + node.id + "]]";
 
 						navigator.clipboard.writeText(text);
