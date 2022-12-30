@@ -1,4 +1,4 @@
-import { EditorSuggestContext, Plugin, prepareFuzzySearch, TFile, ViewState, WorkspaceLeaf } from 'obsidian';
+import { EditorSuggestContext, ItemView, Plugin, prepareFuzzySearch, TFile, ViewState, WorkspaceLeaf } from 'obsidian';
 import { around } from "monkey-around";
 
 export default class CanvasReferencePlugin extends Plugin {
@@ -6,10 +6,45 @@ export default class CanvasReferencePlugin extends Plugin {
 	async onload() {
 		this.patchWorkspaceLeaf();
 		this.patchEditorSuggest();
+
+		this.registerCommands();
 	}
 
 	onunload() {
 
+	}
+
+	registerCommands() {
+		this.addCommand({
+		    id: 'copy-canvas-card-reference',
+		    name: 'Copy Canvas Card Reference',
+		    checkCallback: (checking: boolean) => {
+		        // Conditions to check
+		        const canvasView = this.app.workspace.getActiveViewOfType(ItemView);
+		        if (canvasView?.getViewType() === "canvas") {
+		            // If checking is true, we're simply "checking" if the command can be run.
+		            // If checking is false, then we want to actually perform the operation.
+		            if (!checking) {
+						// @ts-ignore
+		                const canvas = canvasView.canvas;
+
+						// Get the selected node
+						const selection = canvas.selection;
+						if(selection.size !== 1) return;
+
+						// Get the first node
+						const node = selection.values().next().value;
+						// @ts-ignore
+						const text = "[[" + canvasView.file?.path + "#^" + node.id + "]]";
+
+						navigator.clipboard.writeText(text);
+		            }
+
+		            // This command will only show up in Command Palette when the check function returns true
+		            return true;
+		        }
+		    }
+		});
 	}
 
 	patchWorkspaceLeaf() {
